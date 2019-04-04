@@ -9,12 +9,8 @@
 
           name="{{ $field['name'] }}"
 
-          @if (isset($field['value']))
-            @if( ((int) $field['value'] == 1 || old($field['name']) == 1) && old($field['name']) !== '0' )
-             checked="checked"
-            @endif
-          @elseif (isset($field['default']) && $field['default'])
-            checked="checked"
+          @if (old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? false)
+                 checked="checked"
           @endif
 
           @if (isset($field['attributes']))

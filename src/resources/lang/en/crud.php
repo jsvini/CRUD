@@ -32,13 +32,18 @@ return [
     // Revisions
     'revisions'            => 'Revisions',
     'no_revisions'         => 'No revisions found',
-    'created_this'          => 'created this',
+    'created_this'         => 'created this',
     'changed_the'          => 'changed the',
     'restore_this_value'   => 'Restore this value',
     'from'                 => 'from',
     'to'                   => 'to',
     'undo'                 => 'Undo',
     'revision_restored'    => 'Revision successfully restored',
+    'guest_user'           => 'Guest User',
+
+    // Translatable models
+    'edit_translations' => 'EDIT TRANSLATIONS',
+    'language'          => 'Language',
 
     // CRUD table view
     'all'                       => 'All ',
@@ -59,6 +64,21 @@ return [
         'delete_confirmation_not_message'             => "There's been an error. Your item might not have been deleted.",
         'delete_confirmation_not_deleted_title'       => 'Not deleted',
         'delete_confirmation_not_deleted_message'     => 'Nothing happened. Your item is safe.',
+
+        // Bulk actions
+        'bulk_no_entries_selected_title' => 'No entries selected',
+        'bulk_no_entries_selected_message' => 'Please select one or more items to perform a bulk action on them.',
+
+        // Bulk confirmation
+        'bulk_delete_are_you_sure' => 'Are you sure you want to delete these :number entries?',
+        'bulk_delete_sucess_title' => 'Entries deleted',
+        'bulk_delete_sucess_message' => ' items have been deleted',
+        'bulk_delete_error_title' => 'Delete failed',
+        'bulk_delete_error_message' => 'One or more items could not be deleted',
+
+        // Ajax errors
+        'ajax_error_title' => 'Error',
+        'ajax_error_text'  => 'Error loading page. Please refresh the page.',
 
         // DataTables translation
         'emptyTable'     => 'No data available in table',
@@ -81,6 +101,15 @@ return [
         'aria' => [
             'sortAscending'  => ': activate to sort column ascending',
             'sortDescending' => ': activate to sort column descending',
+        ],
+        'export' => [
+            'export'            => 'Export',
+            'copy'              => 'Copy',
+            'excel'             => 'Excel',
+            'csv'               => 'CSV',
+            'pdf'               => 'PDF',
+            'print'             => 'Print',
+            'column_visibility' => 'Column visibility',
         ],
 
     // global crud - errors
@@ -110,6 +139,9 @@ return [
 
     // Fields
         'browse_uploads' => 'Browse uploads',
+        'select_all' => 'Select All',
+        'select_files' => 'Select files',
+        'select_file' => 'Select file',
         'clear' => 'Clear',
         'page_link' => 'Page link',
         'page_link_placeholder' => 'http://example.com/your-desired-page',

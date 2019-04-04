@@ -5,7 +5,7 @@
     $min = isset($field['min']) && (int) $field['min'] > 0 ? $field['min'] : -1;
     $item_name = strtolower(isset($field['entity_singular']) && !empty($field['entity_singular']) ? $field['entity_singular'] : $field['label']);
 
-    $items = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : '' ));
+    $items = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
 
     // make sure not matter the attribute casting
     // the $items variable contains a properly defined JSON
@@ -66,7 +66,7 @@
         </table>
 
         <div class="array-controls btn-group m-t-10">
-            <button ng-if="max == -1 || items.length < max" class="btn btn-sm btn-default" type="button" ng-click="addItem()"><i class="fa fa-plus"></i> Add {{ $item_name }}</button>
+            <button ng-if="max == -1 || items.length < max" class="btn btn-sm btn-default" type="button" ng-click="addItem()"><i class="fa fa-plus"></i> {{trans('backpack::crud.add')}} {{ $item_name }}</button>
         </div>
 
     </div>
@@ -80,7 +80,7 @@
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
-@if ($crud->checkIfFieldIsFirstOfItsType($field, $fields))
+@if ($crud->checkIfFieldIsFirstOfItsType($field))
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
@@ -104,7 +104,14 @@
             window.angularApp.controller('tableController', function($scope){
 
                 $scope.sortableOptions = {
-                    handle: '.sort-handle'
+                    handle: '.sort-handle',
+                    axis: 'y',
+                    helper: function(e, ui) {
+                        ui.children().each(function() {
+                            $(this).width($(this).width());
+                        });
+                        return ui;
+                    },
                 };
 
                 $scope.addItem = function(){
@@ -140,13 +147,13 @@
                         }
                     }
 
-                    if( typeof $scope.items != 'undefined' && $scope.items.length ){
+                    if( typeof $scope.items != 'undefined' ){
 
                         if( typeof $scope.field != 'undefined'){
                             if( typeof $scope.field == 'string' ){
                                 $scope.field = $($scope.field);
                             }
-                            $scope.field.val( angular.toJson($scope.items) );
+                            $scope.field.val( $scope.items.length ? angular.toJson($scope.items) : null );
                         }
                     }
                 }, true);

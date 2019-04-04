@@ -41,6 +41,21 @@ trait HasTranslations
         return $translation;
     }
 
+    public function getTranslation(string $key, string $locale, bool $useFallbackLocale = true)
+    {
+        $locale = $this->normalizeLocale($key, $locale, $useFallbackLocale);
+
+        $translations = $this->getTranslations($key);
+
+        $translation = $translations[$locale] ?? '';
+
+        if ($this->hasGetMutator($key)) {
+            return $this->mutateAttribute($key, $translation);
+        }
+
+        return $translation;
+    }
+
     /*
     |--------------------------------------------------------------------------
     |                            ELOQUENT OVERWRITES
@@ -57,6 +72,7 @@ trait HasTranslations
     {
         $locale = $attributes['locale'] ?? \App::getLocale();
         $attributes = array_except($attributes, ['locale']);
+        $non_translatable = [];
 
         $model = new static();
 
@@ -65,10 +81,10 @@ trait HasTranslations
             if ($model->isTranslatableAttribute($attribute)) { // the attribute is translatable
                 $model->setTranslation($attribute, $locale, $value);
             } else { // the attribute is NOT translatable
-                $model->{$attribute} = $value;
+                $non_translatable[$attribute] = $value;
             }
         }
-        $model->save();
+        $model->fill($non_translatable)->save();
 
         return $model;
     }
@@ -88,17 +104,18 @@ trait HasTranslations
 
         $locale = $attributes['locale'] ?? \App::getLocale();
         $attributes = array_except($attributes, ['locale']);
+        $non_translatable = [];
 
         // do the actual saving
         foreach ($attributes as $attribute => $value) {
             if ($this->isTranslatableAttribute($attribute)) { // the attribute is translatable
                 $this->setTranslation($attribute, $locale, $value);
             } else { // the attribute is NOT translatable
-                $this->{$attribute} = $value;
+                $non_translatable[$attribute] = $value;
             }
         }
 
-        return $this->save($options);
+        return $this->fill($non_translatable)->save($options);
     }
 
     /*
@@ -175,7 +192,11 @@ trait HasTranslations
                 if ($translation_locale) {
                     $item = parent::__call($method, $parameters);
 
-                    if ($item) {
+                    if ($item instanceof \Traversable) {
+                        foreach ($item as $instance) {
+                            $instance->setLocale($translation_locale);
+                        }
+                    } elseif ($item) {
                         $item->setLocale($translation_locale);
                     }
 

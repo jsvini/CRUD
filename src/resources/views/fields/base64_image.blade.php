@@ -6,7 +6,17 @@
     <!-- Wrap the image or canvas element with a block element (container) -->
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
-            <img id="mainImage" src="{{ isset($field['src']) ? $entry->find($entry->id)->{$field['src']}() : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}">
+            @if(!is_null(old(square_brackets_to_dots($field['name']))))
+                <img id="mainImage" src="{{ old(square_brackets_to_dots($field['name'])) }}">
+            @elseif(isset($field['src']) && isset($entry))
+                <img id="mainImage" src="{{ $entry->find($entry->id)->{$field['src']}() }}">
+            @elseif(isset($field['value']))
+                <img id="mainImage" src="{{ $field['value'] }}">
+            @elseif(isset($field['default']))
+                <img id="mainImage" src="{{ $field['default'] }}">
+            @else
+                <img id="mainImage" src="">
+            @endif
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <div class="col-sm-3">
@@ -44,7 +54,7 @@
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
-@if ($crud->checkIfFieldIsFirstOfItsType($field, $fields))
+@if ($crud->checkIfFieldIsFirstOfItsType($field))
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
@@ -184,7 +194,7 @@
                                     $mainImage.cropper(options).cropper("reset", true).cropper("replace", this.result);
                                     // Override form submit to copy canvas to hidden input before submitting
                                     $('form').submit(function() {
-                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL();
+                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL(file.type);
                                         $hiddenImage.val(imageURL);
                                         return true; // return false to cancel form action
                                     });

@@ -1,7 +1,7 @@
 <!-- text input -->
 <?php
 
-$value = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : '' ));
+$value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
 
 // if attribute casting is used, convert to JSON
 if (is_array($value)) {
@@ -48,7 +48,7 @@ if (is_array($value)) {
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
-@if ($crud->checkIfFieldIsFirstOfItsType($field, $fields))
+@if ($crud->checkIfFieldIsFirstOfItsType($field))
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
@@ -172,7 +172,7 @@ if (is_array($value)) {
 
                 var fetchVimeo = function( videoId, callback ){
 
-                    var api = 'http://vimeo.com/api/v2/video/' + videoId + '.json?callback=?';
+                    var api = 'https://vimeo.com/api/v2/video/' + videoId + '.json?callback=?';
 
                     var video = {
                         provider: 'vimeo',
