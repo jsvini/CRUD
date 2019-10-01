@@ -1,5 +1,12 @@
 {{-- Date Range Backpack CRUD filter --}}
 
+<?php
+
+    $filter_language = isset($filter->options['language']) ? $filter->options['language'] : \App::getLocale();
+    $filter_format = isset($filter->options['format']) ? $filter->options['format'] : 'yyyy-mm-dd';
+?>
+
+
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
 	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
@@ -48,12 +55,16 @@
 @push('crud_list_scripts')
 	<!-- include select2 js-->
 	<script src="{{ asset('packages/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    @if ($filter_language !== 'en')
+        <script charset="UTF-8" src="{{ asset('packages/bootstrap-datepicker/dist/locales/bootstrap-datepicker.'.$filter_language.'.min.js') }}"></script>
+    @endif
   <script>
 		jQuery(document).ready(function($) {
 			var dateInput = $('#datepicker-{{ str_slug($filter->name) }}').datepicker({
 				autoclose: true,
-				format: 'yyyy-mm-dd',
-				todayHighlight: true
+				format: '{{ $filter_format }}',
+				todayHighlight: true,
+				language: '{{ $filter_language }}'
 			})
 			.on('changeDate', function(e) {
 				var d = new Date(e.date);
